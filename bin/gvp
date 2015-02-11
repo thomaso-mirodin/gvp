@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage() {
-cat << EOF
+  cat << EOF
 usage: gvp [COMMAND]
 
 SYNOPSIS
@@ -32,8 +32,9 @@ case "${1:-"in"}" in
     mkdir -p .godeps/{src,pkg,bin}
     ;;
   "version")
-    echo ">> gvp v0.2.0"
-    ;;
+    echo -n "gvp version " 1>&2
+    echo "v0.2.0"
+   ;;
   "in")
     mkdir -p .godeps/{src,pkg,bin}
 
@@ -50,15 +51,14 @@ case "${1:-"in"}" in
     ;;
   *)
     ## Support for Plugins: if command is unknown search for a gvp-command executable.
-    if command -v "gvp-$1" > /dev/null
-    then
-      plugin=$1 &&
+    if command -v "gvp-${1}" > /dev/null; then
+      plugin=${1} &&
       shift     &&
       gvp-$plugin $@ &&
       exit
     else
-      echo ">> Unknown command."
       usage && exit 1
+      echo ">> Unknown command." 1>&2
     fi
     ;;
 esac
