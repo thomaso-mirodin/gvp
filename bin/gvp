@@ -21,6 +21,7 @@ USAGE
 
 COMMANDS
     source gvp [in]     Modifies GOPATH to use the .godeps directory.
+    source gvp out      Resets GOPATH and PATH to their previous destinations.
     gvp version         Outputs version information.
     gvp help            Prints this message.
 
@@ -65,6 +66,18 @@ case "${1:-"in"}" in
     #   unset GVP_NAME GVP_OLD_PATH GVP_OLD_GOPATH
     # }
     ;;
+  "out")
+    if [[ -n "${GVP_NAME}" ]]; then
+      # deactivate
+
+      # Undo all the things
+      export GOPATH=${GVP_OLD_GOPATH}
+      export PATH=${GVP_OLD_PATH}
+
+      # Remove the unneeded vars
+      unset GVP_NAME GVP_OLD_PATH GVP_OLD_GOPATH
+    fi
+   ;;
   "help")
     usage
     ;;
