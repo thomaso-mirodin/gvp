@@ -10,7 +10,7 @@ SYNOPSIS
 
     The tool modifies your GOPATH to point to a local .godeps/ directory so that you
     can keep the dependencies of your project isolated there, it also modifies
-    GOBIN and PATH to include the new GOPATH/bin directory.
+    PATH to include the new GOPATH/bin directory.
 
     gvp is a companion tool to [gpm](http://github.com/pote/gpm) the Go Package Manager.
 
@@ -20,9 +20,10 @@ USAGE
       $ source gvp
 
 COMMANDS
-    source gvp      Modifies GOPATH and GOBIN to use the .godeps directory.
-    gvp version     Outputs version information.
-    gvp help        Prints this message.
+    source gvp [in]     Modifies GOPATH to use the .godeps directory.
+    gvp version         Outputs version information.
+    gvp help            Prints this message.
+
 EOF
 }
 
@@ -36,15 +37,33 @@ case "${1:-"in"}" in
     echo "v0.2.0"
    ;;
   "in")
-    mkdir -p .godeps/{src,pkg,bin}
+    local GVP_DIR="$(pwd)/.godeps"
+    mkdir -p ${GVP_DIR}/{src,pkg,bin}
 
-    GVP_DIR="$(pwd)/.godeps"
-    GOBIN="$GVP_DIR/bin"
-    GOPATH="$GVP_DIR:$PWD"
-    PATH="$GOBIN:$PATH"
+    # Set GVP_NAME
+    GVP_NAME=$(basename $(pwd))
+    export GVP_NAME
 
-    export GOBIN GOPATH GVP_NAME PATH
-    echo ">> Local GOPATH set."
+    # Preserve old env vars
+    GVP_OLD_GOPATH=${GOPATH}
+    GVP_OLD_PATH=${PATH}
+    export GVP_OLD_GOPATH GVP_OLD_PATH
+
+    # Set the new GO vars & update the path
+    GOPATH="${GVP_DIR}:${GOPATH}"
+    PATH="${GOPATH}/bin:${PATH}"
+    export GOPATH PATH
+
+    echo ">> GOPATH += '${GVP_DIR}'" 1>&2
+
+    # function deactivate {
+    #   # Undo all the things
+    #   export GOPATH=${GVP_OLD_GOPATH}
+    #   export PATH=${GVP_OLD_PATH}
+
+    #   # Remove the unneeded vars
+    #   unset GVP_NAME GVP_OLD_PATH GVP_OLD_GOPATH
+    # }
     ;;
   "help")
     usage
