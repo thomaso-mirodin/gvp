@@ -89,11 +89,10 @@ case "${1:-"in"}" in
     if command -v "gvp-${1}" > /dev/null; then
       plugin=${1} &&
       shift     &&
-      gvp-$plugin $@ &&
-      exit
+      gvp-$plugin ${@}
     else
-      usage && exit 1
       echo ">> Unknown command." 1>&2
+      usage
     fi
     ;;
 esac
