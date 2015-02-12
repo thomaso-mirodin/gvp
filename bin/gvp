@@ -38,33 +38,37 @@ case "${1:-"in"}" in
     echo "v0.2.0"
    ;;
   "in")
-    local GVP_DIR="$(pwd)/.godeps"
-    mkdir -p ${GVP_DIR}/{src,pkg,bin}
+    if [[ -n "${GVP_NAME}" ]]; then
+      GVP_DIR="$(pwd)/.godeps"
+      mkdir -p ${GVP_DIR}/{src,pkg,bin}
 
-    # Set GVP_NAME
-    GVP_NAME=$(basename $(pwd))
-    export GVP_NAME
+      # Set GVP_NAME
+      GVP_NAME=$(basename $(pwd))
+      export GVP_NAME
 
-    # Preserve old env vars
-    GVP_OLD_GOPATH=${GOPATH}
-    GVP_OLD_PATH=${PATH}
-    export GVP_OLD_GOPATH GVP_OLD_PATH
+      # Preserve old env vars
+      GVP_OLD_GOPATH=${GOPATH}
+      GVP_OLD_PATH=${PATH}
+      export GVP_OLD_GOPATH GVP_OLD_PATH
 
-    # Set the new GO vars & update the path
-    GOPATH="${GVP_DIR}:${GOPATH}"
-    PATH="${GOPATH}/bin:${PATH}"
-    export GOPATH PATH
+      # Set the new GO vars & update the path
+      GOPATH="${GVP_DIR}:${GOPATH}"
+      PATH="${GOPATH}/bin:${PATH}"
+      export GOPATH PATH
 
-    echo ">> GOPATH += '${GVP_DIR}'" 1>&2
+      echo ">> GOPATH += '${GVP_DIR}'" 1>&2
 
-    # function deactivate {
-    #   # Undo all the things
-    #   export GOPATH=${GVP_OLD_GOPATH}
-    #   export PATH=${GVP_OLD_PATH}
+      # function deactivate {
+      #   # Undo all the things
+      #   export GOPATH=${GVP_OLD_GOPATH}
+      #   export PATH=${GVP_OLD_PATH}
 
-    #   # Remove the unneeded vars
-    #   unset GVP_NAME GVP_OLD_PATH GVP_OLD_GOPATH
-    # }
+      #   # Remove the unneeded vars
+      #   unset GVP_NAME GVP_OLD_PATH GVP_OLD_GOPATH
+      # }
+    else
+      echo ">> GVP already active, please \`source gvp out\` first"
+    fi
     ;;
   "out")
     if [[ -n "${GVP_NAME}" ]]; then
