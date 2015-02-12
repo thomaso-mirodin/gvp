@@ -38,7 +38,7 @@ case "${1:-"in"}" in
     echo "v0.2.0"
    ;;
   "in")
-    if [[ -n "${GVP_NAME}" ]]; then
+    if [[ -z "${GVP_NAME}" ]]; then
       GVP_DIR="$(pwd)/.godeps"
       mkdir -p ${GVP_DIR}/{src,pkg,bin}
 
@@ -72,14 +72,13 @@ case "${1:-"in"}" in
     ;;
   "out")
     if [[ -n "${GVP_NAME}" ]]; then
-      # deactivate
 
       # Undo all the things
       export GOPATH=${GVP_OLD_GOPATH}
       export PATH=${GVP_OLD_PATH}
 
       # Remove the unneeded vars
-      unset GVP_NAME GVP_OLD_PATH GVP_OLD_GOPATH
+      unset GVP_NAME GVP_DIR GVP_OLD_PATH GVP_OLD_GOPATH
     fi
    ;;
   "help")
