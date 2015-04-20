@@ -28,11 +28,7 @@ COMMANDS
 EOF
 }
 
-case "${1:-"in"}" in
-  "init")
-    echo ">> This command is deprecated, just run 'source gvp'."
-    mkdir -p .godeps/{src,pkg,bin}
-    ;;
+case "${1:-in}" in
   "version")
     echo -n "gvp version " 1>&2
     echo "v0.2.0"
